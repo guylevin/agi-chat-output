@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from superagi.tools.base_tool import BaseTool
 
 class WriteChatInput(BaseModel):
-    """Input for CopyFileTool."""
+    """Input for Chat tool."""
     content: str = Field(..., description="content to write")
 
 
@@ -13,15 +13,10 @@ class WriteChatTool(BaseTool):
     """
     Write Output tool
 
-    Attributes:
-        name : The name.
-        description : The description.
-        agent_id: The agent id.
-        args_schema : The args schema.
     """
     name: str = "Write Chat"
     args_schema: Type[BaseModel] = WriteChatInput
-    description: str = "Writes text to chat"
+    description: str = "Writes text in a summarized and formated manner to chat"
     agent_id: int = None
     llm: Optional[BaseLlm] = None
 
@@ -38,7 +33,7 @@ class WriteChatTool(BaseTool):
         Returns:
             success message if message is chat written successfully or failure message if writing chat fails.
         """
-        prompt = f"Please summarize and format this answer in a readble way, {content}"
+        prompt = f"Please summarize and format this answer in a readable and understandable way, {content}"
         messages = [{"role": "system", "content": prompt}]
 
         result = self.llm.chat_completion(messages, max_tokens=self.max_token_limit)
